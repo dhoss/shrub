@@ -1,6 +1,6 @@
 package io.dja.btree
-
-trait Btree {
+/*
+trait Tree {
 
   def insert(node: Node): Unit
 
@@ -10,6 +10,5 @@ trait Btree {
 
   def contains(nodeId: Int): Boolean
   
-  case class Node(id: Int, data: String)
-
 }
+*/
