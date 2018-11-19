@@ -1,3 +1,3 @@
 # shrub
 
-## A simple B-Tree implementation in Scala
+## A simple AVL implementation in Scala
