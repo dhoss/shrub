@@ -63,8 +63,7 @@ object Run {
     }
 
     override def toString(): String = {
-        "\n/              \\ \n" +
-      s"left: ${left} right: ${right}\ndata: ${data} height: ${height}\n"
+      s"${data}"
     }
   }
 
