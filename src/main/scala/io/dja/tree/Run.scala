@@ -5,10 +5,10 @@ object Run {
   def main(args: Array[String]): Unit = {
     println("tree")
     val tree = new AvlTree
-    tree.insert(1)
-    tree.insert(2)
-    tree.insert(3)
-    tree.insert(1)
+    tree.insert(new Node(1))
+    tree.insert(new Node(2))
+    tree.insert(new Node(3))
+    tree.insert(new Node(1))
     tree.traverse()
     println("search for a key that exists: 3")
     println(tree.search(tree.rootNode, 3))
@@ -23,31 +23,29 @@ object Run {
 
   class AvlTree {
     var rootNode: Node = _
-    var data: Int = _
 
-    def insert(data: Int): Unit = {
-      rootNode = insertNode(rootNode, data)
+    def insert(node: Node): Unit = {
+      rootNode = insertNode(rootNode, node)
     }
 
-    // nodeData could really be any uniquely identifiable key
-    def insertNode(currentNode: Node, nodeData: Int): Node = {
-      if (currentNode == null) {
+    def insertNode(node: Node, newNode: Node): Node = {
+      val nodeData = newNode.key
+      if (node == null) {
         return new Node(nodeData)
       }
-
-      if (nodeData.compareTo(currentNode.data) < 0) {
-        currentNode.left = insertNode(currentNode.left, nodeData)
+      if (nodeData.compareTo(node.key) < 0) {
+        node.left = insertNode(node.left, newNode)
       } else {
-        currentNode.right = insertNode(currentNode.right, nodeData)
+        node.right = insertNode(node.right, newNode)
       }
 
-      currentNode
+      node
     }
 
-    def height(root: Node): Int = {
+    def height(node: Node): Int = {
       var leftHeight: Int = 0
       var rightHeight: Int = 0
-      var currentNode = root
+      var currentNode = node
       while (currentNode != null) {
         if (currentNode.left != null) {
           leftHeight += 1
@@ -61,21 +59,21 @@ object Run {
     }
 
     // Determine whether we're AVL tree height compliant
-    def balanceFactor(root: Node): Int = {
-      height(root.right) - height(root.left)
+    def balanceFactor(node: Node): Int = {
+      height(node.right) - height(node.left)
     }
 
     // binary search for a node
-    def search(root: Node, key: Int): Node = {
-      if (root == null || root.data == key) {
-        return root
+    def search(node: Node, key: Int): Node = {
+      if (node == null || node.key == key) {
+        return node
       }
 
-      if (root.data > key) {
-        return search(root.left, key)
+      if (node.key > key) {
+        return search(node.left, key)
       }
 
-      search(root.right, key)
+      search(node.right, key)
     }
 
     def traverse() = {
@@ -94,18 +92,28 @@ object Run {
         preOrderTraversal(right)
       }
     }
+/*
+    def rebalance(node: Node): Node = {
+      // left > right
+      if (balanceFactor(node) > 1) {
+
+      }
+    }
+    */
   }
 
-  class Node(var data: Int) extends Comparable[Int] {
+  class Node(var key: Int) extends Comparable[Int] {
+    var parent: Node = _
     var left: Node = _
     var right: Node = _
+    var data: Int = _
 
     override def compareTo(otherData: Int): Int = {
       data - otherData
     }
 
     override def toString(): String = {
-      s"${data}"
+      s"${key}"
     }
   }
 
