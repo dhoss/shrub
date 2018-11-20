@@ -4,103 +4,66 @@ object Run {
 
   def main(args: Array[String]): Unit = {
     println("tree")
-    val tree = new AvlTree
-    tree.insert(new Node(1))
-    tree.insert(new Node(2))
+    val tree = new BsTree
+    tree.insert(new Node(6))
     tree.insert(new Node(3))
     tree.insert(new Node(1))
-    tree.traverse()
-    println("search for a key that exists: 3")
-    println(tree.search(tree.rootNode, 3))
-    println("search for a key that doesn't exist: 5")
-    println(tree.search(tree.rootNode, 5))
-    println(s"Tree balance factor: ${tree.balanceFactor(tree.rootNode)}")
-    println(s"Tree balance factor at node 3: ${tree.balanceFactor(tree.search(tree.rootNode, 2))}")
-
-    println(s"Tree height: ${tree.height(tree.rootNode)}")
-    println(s"Tree height at node 3: ${tree.height(tree.search(tree.rootNode, 2))}")
+    tree.insert(new Node(2))
+    tree.insert(new Node(4))
+    tree.insert(new Node(5))
+    tree.inOrder()
   }
 
-  class AvlTree {
-    var rootNode: Node = _
+  class BsTree {
 
-    def insert(node: Node): Unit = {
-      rootNode = insertNode(rootNode, node)
+    var root: Node = _
+
+    def search(root: Node, key: Int): Node = {
+      if (root == null || root.key == key) {
+        return root
+      }
+      if (root.key > key) {
+        search(root.left, key)
+      }
+      search(root.right, key)
     }
 
-    def insertNode(node: Node, newNode: Node): Node = {
-      val nodeData = newNode.key
-      if (node == null) {
-        return new Node(nodeData)
-      }
-      if (nodeData.compareTo(node.key) < 0) {
-        node.left = insertNode(node.left, newNode)
-      } else {
-        node.right = insertNode(node.right, newNode)
-      }
-
-      node
+    def insert(node: Node) = {
+      root = insertNode(root, node)
     }
 
-    def height(node: Node): Int = {
-      var leftHeight: Int = 0
-      var rightHeight: Int = 0
-      var currentNode = node
-      while (currentNode != null) {
-        if (currentNode.left != null) {
-          leftHeight += 1
-          currentNode = currentNode.left
-        }
-        rightHeight += 1
-        currentNode = currentNode.right
-      }
-      // return the greater of the two numbers because that will be the total depth of the (sub)tree
-      if (leftHeight > rightHeight) leftHeight else rightHeight
-    }
-
-    // Determine whether we're AVL tree height compliant
-    def balanceFactor(node: Node): Int = {
-      height(node.right) - height(node.left)
-    }
-
-    // binary search for a node
-    def search(node: Node, key: Int): Node = {
-      if (node == null || node.key == key) {
-        return node
+    def insertNode(rootNode: Node, node: Node): Node = {
+      val key = node.key
+      var root: Node = rootNode
+      if (root == null) {
+        root = new Node(key)
+        return root
       }
 
-      if (node.key > key) {
-        return search(node.left, key)
+      node.parent = root
+      println(s"PARENT ${node.parent}")
+      if (root.key > key) {
+        root.left = insertNode(root.left, node)
       }
+      root.right = insertNode(root.right, node)
 
-      search(node.right, key)
+      root
     }
 
-    def traverse() = {
-      preOrderTraversal(rootNode)
+    def inOrder(): Unit = {
+      inOrderTraversal(root)
     }
 
-    // TODO: pass in a function to execute instead of just printing
-    def preOrderTraversal(node: Node): Unit = {
-      val left = node.left
-      if (left != null) {
-        preOrderTraversal(left)
-      }
-      println(s"${node}")
-      val right = node.right
-      if (right != null) {
-        preOrderTraversal(right)
+    def inOrderTraversal(root: Node): Unit = {
+      if (root != null) {
+        inOrderTraversal(root.left)
+        println(root)
+        inOrderTraversal(root.right)
       }
     }
-/*
-    def rebalance(node: Node): Node = {
-      // left > right
-      if (balanceFactor(node) > 1) {
 
-      }
-    }
-    */
   }
+
 
   class Node(var key: Int) extends Comparable[Int] {
     var parent: Node = _
@@ -113,7 +76,7 @@ object Run {
     }
 
     override def toString(): String = {
-      s"${key}"
+      s"Node(parent: ${parent} key: ${key} data: ${data})"
     }
   }
 
